@@ -1,0 +1,130 @@
+/* ============================================================
+   common.css — Empty state / Page placeholder / Shared utilities
+   تستخدم نفس tokens من style.css (CSS variables)
+============================================================ */
+
+.page-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: clamp(40px, 8vw, 80px) 24px;
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 22px;
+  box-shadow: 0 6px 24px -12px rgba(15, 23, 42, .12);
+  position: relative;
+  overflow: hidden;
+}
+
+.page-empty::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: radial-gradient(600px circle at 50% -10%,
+    rgba(59, 130, 246, .12),
+    transparent 60%);
+  pointer-events: none;
+}
+
+.page-empty .pe-icon {
+  width: 88px;
+  height: 88px;
+  border-radius: 24px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, rgba(59, 130, 246, .12), rgba(99, 102, 241, .12));
+  color: #3b82f6;
+  font-size: 36px;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.page-empty h2 {
+  font-size: clamp(20px, 2.4vw, 26px);
+  font-weight: 800;
+  color: var(--text, #0f172a);
+  margin: 0 0 10px;
+  position: relative;
+  z-index: 1;
+}
+
+.page-empty p {
+  color: var(--muted, #64748b);
+  max-width: 540px;
+  line-height: 1.8;
+  margin: 0 0 24px;
+  font-size: 15px;
+  position: relative;
+  z-index: 1;
+}
+
+.page-empty .pe-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.page-empty .pe-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+  transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.page-empty .pe-btn.primary {
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  color: #fff;
+  box-shadow: 0 8px 20px -10px rgba(59, 130, 246, .6);
+}
+.page-empty .pe-btn.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -10px rgba(59, 130, 246, .7);
+}
+
+.page-empty .pe-btn.ghost {
+  background: rgba(99, 102, 241, .08);
+  color: #4f46e5;
+  border-color: rgba(99, 102, 241, .2);
+}
+.page-empty .pe-btn.ghost:hover { background: rgba(99, 102, 241, .14); }
+
+/* مصغّر إحصائيات اختيارية أعلى الـ placeholder */
+.page-empty .pe-stats {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 4px 0 22px;
+  position: relative;
+  z-index: 1;
+}
+.page-empty .pe-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(59, 130, 246, .08);
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .page-empty { padding: 48px 18px; }
+  .page-empty .pe-icon { width: 72px; height: 72px; font-size: 30px; }
+}

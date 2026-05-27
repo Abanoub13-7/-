@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>طلبات إدارة المتابعة | نظام الإدارة</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          darkBg:     '#090d16',
+          cardBg:     '#131b2e',
+          cardBg2:    '#172037',
+          inputBg:    '#1f293d',
+          accentBlue: '#0052cc',
+          accentBlue2:'#1e6bff',
+          borderClr:  '#24324f',
+          borderClr2: '#2d3d60',
+          softText:   '#94a3b8',
+        },
+        fontFamily: { cairo: ['Cairo','sans-serif'] },
+        boxShadow: {
+          glow: '0 0 0 4px rgba(0,82,204,.18)',
+          card: '0 4px 24px -8px rgba(0,0,0,.55)',
+        }
+      }
+    }
+  }
+</script>
+<style>
+  html,body{font-family:'Cairo',sans-serif;background:#090d16;color:#e2e8f0}
+  ::-webkit-scrollbar{width:8px;height:8px}
+  ::-webkit-scrollbar-track{background:#0c1322}
+  ::-webkit-scrollbar-thumb{background:#2a3a5c;border-radius:6px}
+  ::-webkit-scrollbar-thumb:hover{background:#39507d}
+
+  .field{
+    background:#1f293d;border:1px solid #24324f;border-radius:8px;
+    padding:.65rem .85rem;font-size:.85rem;color:#e2e8f0;width:100%;
+    transition:all .18s ease;outline:none;
+  }
+  .field::placeholder{color:#64748b}
+  .field:hover{border-color:#33456b}
+  .field:focus{border-color:#1e6bff;box-shadow:0 0 0 4px rgba(30,107,255,.18);background:#1c2740}
+  .field[disabled]{opacity:.5;cursor:not-allowed}
+  .label{font-size:.75rem;color:#94a3b8;margin-bottom:.35rem;display:block;font-weight:500}
+
+  .btn{display:inline-flex;align-items:center;gap:.4rem;font-weight:600;font-size:.82rem;
+    padding:.6rem 1rem;border-radius:8px;transition:all .18s ease;cursor:pointer;border:1px solid transparent;white-space:nowrap}
+  .btn-primary{background:#0052cc;color:#fff;box-shadow:0 6px 18px -8px rgba(0,82,204,.7)}
+  .btn-primary:hover{background:#1e6bff;transform:translateY(-1px);box-shadow:0 10px 22px -8px rgba(30,107,255,.6)}
+  .btn-ghost{background:transparent;color:#cbd5e1;border-color:#24324f}
+  .btn-ghost:hover{background:#1a2540;border-color:#33456b;color:#fff}
+  .btn-danger{background:#7f1d1d;color:#fecaca}
+  .btn-danger:hover{background:#991b1b;color:#fff}
+
+  .badge{display:inline-flex;align-items:center;gap:.3rem;font-size:.7rem;font-weight:600;
+    padding:.25rem .55rem;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+  .b-replied{background:rgba(34,197,94,.12);color:#4ade80;border-color:rgba(34,197,94,.3)}
+  .b-pending{background:rgba(148,163,184,.12);color:#cbd5e1;border-color:rgba(148,163,184,.25)}
+  .b-urg1{background:rgba(234,179,8,.12);color:#facc15;border-color:rgba(234,179,8,.3)}
+  .b-urg2{background:rgba(239,68,68,.14);color:#f87171;border-color:rgba(239,68,68,.35)}
+
+  .icon-btn{width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;
+    border-radius:8px;border:1px solid #24324f;background:#172037;color:#94a3b8;transition:all .18s;cursor:pointer}
+  .icon-btn:hover{color:#fff;border-color:#33456b;background:#1f2b48;transform:translateY(-1px)}
+  .icon-btn.danger:hover{color:#fecaca;border-color:#7f1d1d;background:#3b1212}
+
+  .tag{display:inline-flex;align-items:center;gap:.35rem;background:rgba(30,107,255,.12);
+    color:#93c5fd;border:1px solid rgba(30,107,255,.35);padding:.25rem .55rem;border-radius:6px;font-size:.72rem;font-weight:500}
+  .tag button{color:#93c5fd;opacity:.7;transition:.15s}
+  .tag button:hover{opacity:1;color:#fff}
+
+  .modal-backdrop{position:fixed;inset:0;background:rgba(2,6,15,.72);backdrop-filter:blur(6px);z-index:60;display:none;align-items:flex-start;justify-content:center;padding:1rem;overflow-y:auto}
+  .modal-backdrop.open{display:flex}
+  .modal{background:#131b2e;border:1px solid #24324f;border-radius:14px;width:100%;max-width:980px;margin:1.5rem 0;box-shadow:0 20px 60px -10px rgba(0,0,0,.7)}
+  .section-card{background:#172037;border:1px solid #24324f;border-radius:10px;padding:1rem 1.1rem}
+  .section-title{font-size:.82rem;font-weight:700;color:#fff;margin-bottom:.85rem;display:flex;align-items:center;gap:.5rem;padding-bottom:.55rem;border-bottom:1px solid #24324f}
+  .section-title .dot{width:6px;height:6px;border-radius:999px;background:#1e6bff;box-shadow:0 0 10px #1e6bff}
+
+  .radio-card{display:flex;align-items:center;gap:.55rem;padding:.7rem .85rem;border:1px solid #24324f;background:#1f293d;border-radius:8px;cursor:pointer;font-size:.8rem;transition:.18s;font-weight:500;color:#cbd5e1}
+  .radio-card:hover{border-color:#33456b;color:#fff}
+  .radio-card.active{border-color:#1e6bff;background:rgba(30,107,255,.1);color:#fff;box-shadow:inset 0 0 0 1px #1e6bff}
+  .radio-card input{accent-color:#1e6bff}
+
+  .dropzone{border:1.5px dashed #33456b;border-radius:10px;padding:1.1rem;text-align:center;background:#1a2540;cursor:pointer;transition:.18s}
+  .dropzone:hover,.dropzone.drag{border-color:#1e6bff;background:rgba(30,107,255,.07)}
+  .file-item{display:flex;align-items:center;justify-content:space-between;gap:.6rem;background:#1f293d;border:1px solid #24324f;border-radius:8px;padding:.55rem .75rem;font-size:.78rem}
+
+  .suggest-list{position:absolute;top:calc(100% + 4px);right:0;left:0;background:#1a2540;border:1px solid #24324f;border-radius:8px;max-height:220px;overflow:auto;z-index:30;box-shadow:0 12px 24px -8px rgba(0,0,0,.6)}
+  .suggest-item{padding:.55rem .8rem;font-size:.8rem;cursor:pointer;border-bottom:1px solid #24324f}
+  .suggest-item:last-child{border:0}
+  .suggest-item:hover{background:#22304f;color:#fff}
+
+  .anim-in{animation:fadeUp .25s ease}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+
+  .toast{background:#172037;border:1px solid #24324f;border-radius:10px;padding:.7rem .9rem;
+    display:flex;align-items:center;gap:.55rem;font-size:.8rem;min-width:240px;
+    box-shadow:0 16px 32px -10px rgba(0,0,0,.6);animation:slideIn .25s ease}
+  .toast.s{border-color:rgba(34,197,94,.4)}
+  .toast.e{border-color:rgba(239,68,68,.4)}
+  .toast.w{border-color:rgba(234,179,8,.4)}
+  @keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+
+  .resp-chip{display:block;width:100%;text-align:right;font-size:.7rem;color:#93c5fd;
+    padding:.2rem .5rem;border-radius:6px;cursor:pointer;transition:.15s;border:1px solid transparent}
+  .resp-chip:hover{background:rgba(30,107,255,.12);border-color:rgba(30,107,255,.3);color:#fff}
+
+  .page-btn{min-width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;
+    border-radius:8px;background:#172037;border:1px solid #24324f;color:#cbd5e1;font-size:.78rem;font-weight:600;cursor:pointer;transition:.15s;padding:0 .55rem}
+  .page-btn:hover:not(:disabled){background:#1f2b48;color:#fff;border-color:#33456b}
+  .page-btn.active{background:#0052cc;border-color:#0052cc;color:#fff}
+  .page-btn:disabled{opacity:.4;cursor:not-allowed}
+
+  .empty{padding:3rem 1rem;text-align:center;color:#64748b}
+  .empty svg{margin:0 auto .8rem;opacity:.55}
+
+  /* Accordion sector groups (multi-sector multi-select) — same as complaints */
+  .sec-group{background:#1a2540;border:1px solid #24324f;border-radius:10px;overflow:hidden;transition:.2s}
+  .sec-group + .sec-group{margin-top:.5rem}
+  .sec-group.has-sel{border-color:#1e6bff;box-shadow:inset 0 0 0 1px rgba(30,107,255,.25)}
+  .sec-head{display:flex;align-items:center;gap:.6rem;padding:.7rem .9rem;cursor:pointer;
+    user-select:none;transition:.15s;background:#1a2540}
+  .sec-head:hover{background:#22304f}
+  .sec-head .chev{transition:transform .25s ease;color:#94a3b8}
+  .sec-group.open .chev{transform:rotate(-180deg)}
+  .sec-head .title{font-size:.83rem;font-weight:600;color:#fff;flex:1}
+  .sec-head .pill{font-size:.65rem;font-weight:700;padding:.15rem .5rem;border-radius:999px;
+    background:rgba(30,107,255,.15);color:#93c5fd;border:1px solid rgba(30,107,255,.3)}
+  .sec-body{display:none;padding:.4rem .6rem .8rem;border-top:1px solid #24324f;background:#131b2e}
+  .sec-group.open .sec-body{display:block;animation:fadeUp .2s ease}
+  .dept-opt{display:flex;align-items:center;gap:.55rem;padding:.55rem .65rem;border-radius:8px;
+    cursor:pointer;font-size:.8rem;color:#cbd5e1;transition:.15s;border:1px solid transparent}
+  .dept-opt:hover{background:#1f2b48;color:#fff}
+  .dept-opt.sel{background:rgba(30,107,255,.1);color:#fff;border-color:rgba(30,107,255,.3)}
+  .chk{width:18px;height:18px;border-radius:5px;border:1.5px solid #33456b;display:inline-flex;
+    align-items:center;justify-content:center;background:#0f1729;transition:.15s;flex-shrink:0}
+  .dept-opt.sel .chk{background:#0052cc;border-color:#0052cc}
+  .chk svg{opacity:0;transition:.15s;color:#fff}
+  .dept-opt.sel .chk svg{opacity:1}
+</style>
+
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/common.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+<link rel="stylesheet" href="../assets/css/enhance.css">
+</head>
+<body class="admin-page min-h-screen" data-page="requests">
+
+<main class="main-wrapper">
+<div class="content">
+<div id="toasts" class="fixed top-4 left-4 z-[80] flex flex-col gap-2"></div>
+
+<div class="max-w-[1600px] mx-auto">
+
+  <!-- HEADER -->
+  <header class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+    <div>
+      <h1 class="text-2xl md:text-[28px] font-bold text-white tracking-tight">طلبات إدارة المتابعة</h1>
+      <p class="text-[13px] text-softText mt-1">إدارة ومتابعة جميع الطلبات داخل النظام</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <button class="btn btn-ghost" onclick="exportJSON()">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+        تصدير
+      </button>
+      <button class="btn btn-primary" onclick="openRequestModal()">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        إضافة طلب جديد
+      </button>
+    </div>
+  </header>
+
+  <!-- FILTERS -->
+  <section class="bg-cardBg border border-borderClr rounded-xl p-4 md:p-5 mb-6 shadow-card">
+    <div class="flex items-center justify-between mb-4 pb-3 border-b border-borderClr">
+      <h2 class="text-sm font-semibold text-white flex items-center gap-2">
+        <span class="w-1.5 h-1.5 rounded-full bg-accentBlue2 shadow-[0_0_10px_#1e6bff]"></span>
+        البحث والفلاتر
+      </h2>
+      <button class="text-xs text-softText hover:text-white transition" onclick="resetFilters()">تفريغ الفلاتر</button>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
+      <div class="xl:col-span-2">
+        <label class="label">بحث عام</label>
+        <div class="relative">
+          <svg class="absolute top-1/2 -translate-y-1/2 right-3 text-softText" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="fSearch" class="field pr-9" placeholder="رقم الطلب، اسم العميل، عنوان الطلب، رقم الهاتف..." />
+        </div>
+      </div>
+      <div>
+        <label class="label">نوع مقدم الطلب</label>
+        <select id="fApplicant" class="field">
+          <option value="">الكل</option>
+          <option value="فرد">فرد</option>
+          <option value="شركة">شركة</option>
+        </select>
+      </div>
+      <div>
+        <label class="label">الحالة</label>
+        <select id="fStatus" class="field"><option value="">الكل</option></select>
+      </div>
+      <div>
+        <label class="label">من تاريخ</label>
+        <input id="fFrom" type="date" class="field" />
+      </div>
+      <div>
+        <label class="label">إلى تاريخ</label>
+        <input id="fTo" type="date" class="field" />
+      </div>
+    </div>
+  </section>
+
+  <!-- TABLE -->
+  <section class="bg-cardBg border border-borderClr rounded-xl shadow-card overflow-hidden">
+    <div class="flex items-center justify-between px-4 md:px-5 py-3.5 border-b border-borderClr">
+      <h2 class="text-sm font-semibold text-white flex items-center gap-2">
+        <span class="w-1.5 h-1.5 rounded-full bg-accentBlue2 shadow-[0_0_10px_#1e6bff]"></span>
+        قائمة الطلبات <span id="countBadge" class="text-xs text-softText font-normal mr-1">(0)</span>
+      </h2>
+      <div class="text-xs text-softText hidden sm:block">يتم عرض 25 طلب لكل صفحة</div>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm min-w-[900px]">
+        <thead class="bg-[#101729] text-softText text-xs uppercase tracking-wider">
+          <tr>
+            <th class="px-4 py-3 text-right font-semibold">رقم الطلب</th>
+            <th class="px-4 py-3 text-right font-semibold">العميل</th>
+            <th class="px-4 py-3 text-right font-semibold">عنوان الطلب</th>
+            <th class="px-4 py-3 text-right font-semibold">التصنيف</th>
+            <th class="px-4 py-3 text-right font-semibold">الحالة</th>
+            <th class="px-4 py-3 text-right font-semibold">تاريخ الاستلام</th>
+            <th class="px-4 py-3 text-right font-semibold">مستلم الطلب</th>
+            <th class="px-4 py-3 text-right font-semibold">الرسوم</th>
+            <th class="px-4 py-3 text-center font-semibold">الإجراءات</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+
+    <div id="emptyState" class="empty hidden">
+      <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"/></svg>
+      <p class="text-sm font-semibold text-slate-300">لا توجد طلبات مطابقة</p>
+      <p class="text-xs mt-1">جرّب تعديل الفلاتر أو إضافة طلب جديد.</p>
+    </div>
+
+    <div id="pagination" class="flex flex-wrap items-center justify-between gap-3 px-4 md:px-5 py-3.5 border-t border-borderClr"></div>
+  </section>
+</div>
+
+<!-- ============ REQUEST MODAL ============ -->
+<div id="reqModal" class="modal-backdrop">
+  <div class="modal">
+    <div class="flex items-center justify-between px-5 py-4 border-b border-borderClr sticky top-0 bg-cardBg z-10 rounded-t-[14px]">
+      <h3 id="modalTitle" class="text-base font-bold text-white">إضافة طلب جديد</h3>
+      <button class="icon-btn" onclick="closeRequestModal()" title="إغلاق">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <div class="p-5 space-y-4">
+      <!-- CUSTOMER -->
+      <div class="section-card">
+        <div class="section-title"><span class="dot"></span>بيانات العميل</div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div class="md:col-span-2 relative">
+            <label class="label">اسم العميل (ابحث أو أنشئ)</label>
+            <input id="custSearch" class="field" placeholder="ابدأ بكتابة اسم العميل..." autocomplete="off" />
+            <div id="custSuggest" class="suggest-list" style="display:none"></div>
+          </div>
+          <div id="custNotFound" class="md:col-span-2 hidden anim-in p-3 rounded-lg border border-dashed border-borderClr2 bg-[#1a2540] text-xs flex items-center justify-between gap-3 flex-wrap">
+            <span class="text-amber-300">العميل غير موجود — هل تريد إضافة عميل جديد؟</span>
+            <button type="button" class="btn btn-primary" onclick="showNewCustomerForm()">+ إضافة عميل جديد</button>
+          </div>
+
+          <div id="newCustomerForm" class="md:col-span-2 hidden grid grid-cols-1 md:grid-cols-2 gap-3 p-3 rounded-lg border border-borderClr bg-[#101729] anim-in">
+            <div><label class="label">رقم الهاتف</label><input id="ncPhone" class="field" placeholder="01XXXXXXXXX" /></div>
+            <div><label class="label">الرقم القومي</label><input id="ncNid" class="field" placeholder="14 رقم" maxlength="14" /></div>
+            <div class="md:col-span-2"><label class="label">العنوان</label><input id="ncAddress" class="field" placeholder="العنوان التفصيلي" /></div>
+            <div class="md:col-span-2"><label class="label">ملاحظات</label><textarea id="ncNotes" class="field" rows="2" placeholder="ملاحظات إضافية..."></textarea></div>
+            <div class="md:col-span-2 flex justify-end gap-2">
+              <button type="button" class="btn btn-ghost" onclick="hideNewCustomerForm()">إلغاء</button>
+              <button type="button" class="btn btn-primary" onclick="saveNewCustomer()">حفظ العميل الجديد</button>
+            </div>
+          </div>
+
+          <div id="selectedCustomer" class="md:col-span-2 hidden anim-in p-3 rounded-lg border border-borderClr2 bg-[#101729]">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs text-softText">العميل المحدد</span>
+              <button type="button" class="text-xs text-rose-300 hover:text-rose-200" onclick="clearSelectedCustomer()">إزالة</button>
+            </div>
+            <div id="selectedCustomerBody" class="text-sm text-white"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- APPLICANT ROLE -->
+      <div class="section-card">
+        <div class="section-title"><span class="dot"></span>صفة مقدم الطلب</div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <label class="radio-card"><input type="radio" name="role" value="self" checked onchange="renderRole()" />مقدم الطلب بنفسه</label>
+          <label class="radio-card"><input type="radio" name="role" value="agent" onchange="renderRole()" />وكيل عن شخص</label>
+          <label class="radio-card"><input type="radio" name="role" value="company" onchange="renderRole()" />مفوض عن شركة</label>
+        </div>
+
+        <div id="roleAgent" class="hidden mt-4 grid grid-cols-1 md:grid-cols-3 gap-3 anim-in">
+          <div><label class="label">اسم الموكل</label><input id="agName" class="field" /></div>
+          <div><label class="label">الرقم القومي للموكل</label><input id="agNid" class="field" maxlength="14" placeholder="14 رقم" /></div>
+          <div><label class="label">رقم التوكيل</label><input id="agNum" class="field" /></div>
+        </div>
+
+        <div id="roleCompany" class="hidden mt-4 grid grid-cols-1 md:grid-cols-2 gap-3 anim-in">
+          <div><label class="label">اسم الشركة</label><input id="coName" class="field" /></div>
+          <div><label class="label">السجل التجاري</label><input id="coReg" class="field" /></div>
+          <div class="md:col-span-2">
+            <label class="label">البطاقة الضريبية (PDF واحد فقط)</label>
+            <div id="taxDrop" class="dropzone">
+              <svg class="mx-auto mb-2 text-softText" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 16V4m0 0-4 4m4-4 4 4M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+              <p class="text-xs text-softText">اسحب الملف هنا أو اضغط للاختيار (PDF فقط)</p>
+              <input id="taxFile" type="file" accept="application/pdf" class="hidden" />
+            </div>
+            <div id="taxFileInfo" class="mt-2"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REQUEST DETAILS -->
+      <div class="section-card">
+        <div class="section-title"><span class="dot"></span>تفاصيل الطلب</div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div class="md:col-span-2"><label class="label">اسم الطلب</label>
+            <input id="rTitle" class="field" placeholder="أدخل عنواناً مختصراً للطلب" /></div>
+          <div><label class="label">تصنيف الطلب</label>
+            <select id="rCategory" class="field"><option value="">— اختر —</option></select>
+          </div>
+          <div><label class="label">تاريخ الاستلام</label><input id="rDate" type="date" class="field" /></div>
+          <div><label class="label">اسم مستلم الطلب</label>
+            <input id="rRecipient" class="field" placeholder="اسم الموظف الذي استلم الطلب" autocomplete="off" /></div>
+          <div><label class="label">الرسوم المالية</label>
+            <div class="relative">
+              <input id="rFees" class="field pl-14" placeholder="0" inputmode="numeric" />
+              <span class="absolute top-1/2 -translate-y-1/2 left-3 text-xs text-softText">ج.م</span>
+            </div>
+          </div>
+          <div class="md:col-span-2">
+            <p class="text-[11px] text-softText leading-relaxed">الحالة تُسجَّل تلقائياً كـ «لم يتم الرد» عند الإنشاء، ويمكن تسجيل الرد لاحقاً من شاشة عرض الطلب.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- DEPARTMENTS — MULTI SECTOR ACCORDION (matches complaints) -->
+      <div class="section-card">
+        <div class="section-title">
+          <span class="dot"></span>الإدارات المختصة
+          <span class="count" style="margin-right:auto;font-size:.7rem;color:#94a3b8;font-weight:500">يمكنك اختيار إدارات من قطاعات متعددة</span>
+        </div>
+        <div id="sectorsAccordion"></div>
+        <div id="selectedDeptsWrap" class="mt-3 hidden">
+          <div class="text-[11px] text-softText mb-2">الإدارات المختارة:</div>
+          <div id="selectedDeptsTags" class="flex flex-wrap gap-2"></div>
+        </div>
+      </div>
+
+      <!-- ATTACHMENTS -->
+      <div class="section-card">
+        <div class="section-title"><span class="dot"></span>مرفقات الطلب (حتى 5 ملفات PDF)</div>
+        <div id="attDrop" class="dropzone">
+          <svg class="mx-auto mb-2 text-softText" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5m0 0L7 8m5-5v12"/></svg>
+          <p class="text-xs text-softText">اسحب وأفلت الملفات هنا أو اضغط للاختيار</p>
+          <input id="attFiles" type="file" accept="application/pdf" multiple class="hidden" />
+        </div>
+        <div id="attList" class="mt-3 space-y-2"></div>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-end gap-2 px-5 py-4 border-t border-borderClr sticky bottom-0 bg-cardBg rounded-b-[14px]">
+      <button class="btn btn-ghost" onclick="closeRequestModal()">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveRequest()">حفظ الطلب</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ VIEW MODAL ============ -->
+<div id="viewModal" class="modal-backdrop">
+  <div class="modal max-w-[760px]">
+    <div class="flex items-center justify-between px-5 py-4 border-b border-borderClr">
+      <h3 class="text-base font-bold text-white">تفاصيل الطلب</h3>
+      <button class="icon-btn" onclick="closeView()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div id="viewBody" class="p-5 text-sm"></div>
+  </div>
+</div>
+
+</div>
+
+</main>
+
+
+<script src="../assets/js/store.js"></script>
+<script src="../assets/js/layout.js"></script>
+<script src="../assets/js/script.js"></script>
+
+
+<script>
+/* ===================== STATE ===================== */
+const SECTORS = (window.Store && Store.sectors()) || {};
+
+const LS = {
+  customers: 'rms_customers',
+  requests:  'rms_requests',
+  counter:   'rms_counter',
+};
+
+let state = {
+  customers: JSON.parse(localStorage.getItem(LS.customers) || '[]'),
+  requests:  JSON.parse(localStorage.getItem(LS.requests)  || '[]'),
+  counter:   parseInt(localStorage.getItem(LS.counter) || '0', 10),
+  page: 1,
+  perPage: 25,
+  filters: { search:'', applicant:'', status:'', from:'', to:'' },
+  // current modal form — departments now ALWAYS [{sector,name}]
+  form: {
+    id:null, customer:null, role:'self',
+    agent:{name:'',nid:'',num:''},
+    company:{name:'',reg:'',tax:null},
+    title:'', category:'', date:'', fees:'', status:'لم يتم الرد',
+    responses:[], departments:[], attachments:[],
+    openSectors:{}
+  }
+};
+
+/* ===== Migration: convert legacy requests (sector+departments[string]) to unified shape ===== */
+(function migrateRequests(){
+  let changed = false;
+  state.requests.forEach(r => {
+    if (Array.isArray(r.departments) && r.departments.length && typeof r.departments[0] === 'string') {
+      const sec = r.sector || '';
+      r.departments = r.departments.map(name => ({ sector: sec, name }));
+      delete r.sector;
+      changed = true;
+    }
+    if (!r.status) { r.status = 'لم يتم الرد'; changed = true; }
+  });
+  if (changed) localStorage.setItem(LS.requests, JSON.stringify(state.requests));
+})();
+
+function persist(){
+  localStorage.setItem(LS.customers, JSON.stringify(state.customers));
+  localStorage.setItem(LS.requests,  JSON.stringify(state.requests));
+  localStorage.setItem(LS.counter,   String(state.counter));
+}
+
+/* ===================== TOASTS ===================== */
+function toast(msg, type='s'){
+  const wrap = document.getElementById('toasts');
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  const icon = type==='s' ? '✓' : type==='e' ? '!' : '⚠';
+  el.innerHTML = `<span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${type==='s'?'bg-green-500/20 text-green-300':type==='e'?'bg-rose-500/20 text-rose-300':'bg-amber-500/20 text-amber-300'}">${icon}</span><span>${msg}</span>`;
+  wrap.appendChild(el);
+  setTimeout(()=>{el.style.opacity='0';el.style.transition='.25s';setTimeout(()=>el.remove(),250);}, 2800);
+}
+
+/* ===================== FILTERS ===================== */
+['fSearch','fApplicant','fStatus','fFrom','fTo'].forEach(id=>{
+  document.addEventListener('input', e => { if(e.target.id===id) applyFilters(); });
+  document.addEventListener('change', e => { if(e.target.id===id) applyFilters(); });
+});
+function applyFilters(){
+  state.filters = {
+    search:    document.getElementById('fSearch').value.trim().toLowerCase(),
+    applicant: document.getElementById('fApplicant').value,
+    status:    document.getElementById('fStatus').value,
+    from:      document.getElementById('fFrom').value,
+    to:        document.getElementById('fTo').value,
+  };
+  state.page = 1;
+  renderTable();
+}
+function resetFilters(){
+  ['fSearch','fApplicant','fStatus','fFrom','fTo'].forEach(id=>document.getElementById(id).value='');
+  applyFilters();
+}
+
+function filtered(){
+  const f = state.filters;
+  return state.requests.filter(r=>{
+    if(f.search){
+      const hay = [r.number, r.customer?.name, r.title, r.customer?.phone].join(' ').toLowerCase();
+      if(!hay.includes(f.search)) return false;
+    }
+    if(f.applicant){
+      const isCompany = r.role==='company';
+      const type = isCompany?'شركة':'فرد';
+      if(type!==f.applicant) return false;
+    }
+    if(f.status && r.status!==f.status) return false;
+    if(f.from && r.date < f.from) return false;
+    if(f.to   && r.date > f.to)   return false;
+    return true;
+  });
+}
+
+/* ===================== TABLE ===================== */
+function statusBadge(s){
+  const map = {'تم الرد':'b-replied','لم يتم الرد':'b-pending','استعجال 1':'b-urg1','استعجال 2':'b-urg2'};
+  return `<span class="badge ${map[s]||'b-pending'}">${s}</span>`;
+}
+function fmtMoney(v){
+  if(!v && v!==0) return '—';
+  const n = typeof v==='string' ? parseInt(v.replace(/,/g,''),10) : v;
+  if(isNaN(n)) return '—';
+  return n.toLocaleString('en-US') + ' ج.م';
+}
+function fmtDate(d){ return d || '—'; }
+
+function renderTable(){
+  const data = filtered().sort((a,b)=> b.createdAt - a.createdAt);
+  document.getElementById('countBadge').textContent = `(${data.length})`;
+  const tbody = document.getElementById('tbody');
+  const empty = document.getElementById('emptyState');
+
+  if(!data.length){
+    tbody.innerHTML = '';
+    empty.classList.remove('hidden');
+    document.getElementById('pagination').innerHTML = '';
+    return;
+  }
+  empty.classList.add('hidden');
+
+  const pages = Math.max(1, Math.ceil(data.length / state.perPage));
+  if(state.page > pages) state.page = pages;
+  const start = (state.page-1)*state.perPage;
+  const slice = data.slice(start, start+state.perPage);
+
+  tbody.innerHTML = slice.map(r=>`
+    <tr class="border-t border-borderClr hover:bg-[#172037]/60 transition">
+      <td class="px-4 py-3 align-top">
+        <span class="text-xs font-mono font-semibold text-accentBlue2">${r.number}</span>
+      </td>
+      <td class="px-4 py-3 align-top">
+        <div class="text-white font-semibold text-[13px]">${escapeHtml(r.customer?.name||'—')}</div>
+        <div class="text-[11px] text-softText mt-0.5">${escapeHtml(r.customer?.phone||'')}</div>
+      </td>
+      <td class="px-4 py-3 align-top text-[13px] max-w-[260px]"><div class="truncate">${escapeHtml(r.title)}</div></td>
+      <td class="px-4 py-3 align-top text-[12px] text-slate-300">${escapeHtml(r.category||'—')}</td>
+      <td class="px-4 py-3 align-top">
+        ${statusBadge(r.status)}
+        ${r.status==='تم الرد' && r.responses?.length ? `
+          <div class="mt-2 space-y-0.5">
+            ${r.responses.map(x=>`<span class="resp-chip" title="عرض تفاصيل الرد">${escapeHtml(x)}</span>`).join('')}
+          </div>` : ''}
+      </td>
+      <td class="px-4 py-3 align-top text-[12px] text-slate-300">${fmtDate(r.date)}</td>
+      <td class="px-4 py-3 align-top text-[12px] text-slate-200">${escapeHtml(r.recipient||'—')}</td>
+      <td class="px-4 py-3 align-top text-[12px] text-slate-300">${fmtMoney(r.fees)}</td>
+      <td class="px-4 py-3 align-top">
+        <div class="flex items-center justify-center gap-1.5">
+          <button class="icon-btn" title="عرض" onclick="viewRequest('${r.id}')">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+          <button class="icon-btn" title="تعديل" onclick="editRequest('${r.id}')">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+          </button>
+          <button class="icon-btn danger" title="حذف" onclick="deleteRequest('${r.id}')">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+          </button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+
+  renderPagination(data.length, pages);
+}
+
+function renderPagination(total, pages){
+  const wrap = document.getElementById('pagination');
+  const start = (state.page-1)*state.perPage + 1;
+  const end   = Math.min(state.page*state.perPage, total);
+  let nums = '';
+  const maxBtns = 7;
+  let s = Math.max(1, state.page-3), e = Math.min(pages, s+maxBtns-1);
+  s = Math.max(1, e-maxBtns+1);
+  for(let i=s;i<=e;i++){
+    nums += `<button class="page-btn ${i===state.page?'active':''}" onclick="goPage(${i})">${i}</button>`;
+  }
+  wrap.innerHTML = `
+    <div class="text-xs text-softText">عرض <span class="text-slate-300 font-semibold">${start}-${end}</span> من <span class="text-slate-300 font-semibold">${total}</span></div>
+    <div class="flex items-center gap-1.5">
+      <button class="page-btn" onclick="goPage(${state.page-1})" ${state.page===1?'disabled':''}>السابق</button>
+      ${nums}
+      <button class="page-btn" onclick="goPage(${state.page+1})" ${state.page===pages?'disabled':''}>التالي</button>
+    </div>`;
+}
+function goPage(p){ state.page = p; renderTable(); }
+
+/* ===================== MODAL ===================== */
+function openRequestModal(req=null){
+  if(req){
+    document.getElementById('modalTitle').textContent = `تعديل الطلب · ${req.number}`;
+    state.form = JSON.parse(JSON.stringify(req));
+    // Backfill legacy fields
+    if (!Array.isArray(state.form.departments)) state.form.departments = [];
+    // Convert any legacy strings
+    state.form.departments = state.form.departments.map(d =>
+      typeof d === 'string' ? { sector: req.sector || '', name: d } : d
+    );
+    if (!state.form.openSectors) state.form.openSectors = {};
+    if (!state.form.status) state.form.status = 'لم يتم الرد';
+  } else {
+    document.getElementById('modalTitle').textContent = 'إضافة طلب جديد';
+    state.form = {
+      id:null, customer:null, role:'self',
+      agent:{name:'',nid:'',num:''},
+      company:{name:'',reg:'',tax:null},
+      title:'', category:'', date:'', recipient:'', fees:'', status:'لم يتم الرد',
+      responses:[], departments:[], attachments:[], openSectors:{}
+    };
+  }
+  syncFormToUI();
+  document.getElementById('reqModal').classList.add('open');
+}
+function closeRequestModal(){ document.getElementById('reqModal').classList.remove('open'); }
+
+function syncFormToUI(){
+  // Customer
+  document.getElementById('custSearch').value = state.form.customer?.name || '';
+  document.getElementById('custSuggest').style.display='none';
+  document.getElementById('custNotFound').classList.add('hidden');
+  document.getElementById('newCustomerForm').classList.add('hidden');
+  showSelectedCustomer();
+
+  // Role
+  document.querySelectorAll('input[name="role"]').forEach(r=>{r.checked = (r.value===state.form.role);});
+  document.getElementById('agName').value = state.form.agent.name;
+  document.getElementById('agNid').value  = state.form.agent.nid;
+  document.getElementById('agNum').value  = state.form.agent.num;
+  document.getElementById('coName').value = state.form.company.name;
+  document.getElementById('coReg').value  = state.form.company.reg;
+  renderTaxFile();
+  renderRole();
+
+  // Details
+  document.getElementById('rTitle').value     = state.form.title;
+  document.getElementById('rCategory').value  = state.form.category;
+  document.getElementById('rDate').value      = state.form.date;
+  document.getElementById('rRecipient').value = state.form.recipient || '';
+  document.getElementById('rFees').value      = state.form.fees ? Number(String(state.form.fees).replace(/,/g,'')).toLocaleString('en-US') : '';
+  renderResponses();
+
+  // Departments accordion
+  buildSectorsAccordion();
+  renderSelectedDeptsTags();
+
+  // Attachments
+  renderAttachments();
+}
+
+/* ===== Active radio styling ===== */
+document.addEventListener('change', e=>{
+  if(e.target.name==='role'){
+    document.querySelectorAll('input[name="role"]').forEach(r=>{
+      r.closest('.radio-card').classList.toggle('active', r.checked);
+    });
+  }
+});
+
+/* ===================== CUSTOMER SMART SEARCH ===================== */
+const custSearch = ()=>document.getElementById('custSearch');
+document.addEventListener('input', e=>{
+  if(e.target.id==='custSearch'){
+    const q = e.target.value.trim();
+    const list = document.getElementById('custSuggest');
+    document.getElementById('custNotFound').classList.add('hidden');
+    document.getElementById('newCustomerForm').classList.add('hidden');
+    if(!q){ list.style.display='none'; return; }
+    const matches = state.customers.filter(c=>c.name.toLowerCase().includes(q.toLowerCase())).slice(0,8);
+    if(matches.length){
+      list.innerHTML = matches.map(c=>`<div class="suggest-item" data-id="${c.id}">
+        <div class="text-white">${escapeHtml(c.name)}</div>
+        <div class="text-[11px] text-softText">${escapeHtml(c.phone||'')} ${c.nid?'· '+escapeHtml(c.nid):''}</div>
+      </div>`).join('');
+      list.style.display='block';
+    } else {
+      list.style.display='none';
+      document.getElementById('custNotFound').classList.remove('hidden');
+    }
+  }
+});
+document.addEventListener('click', e=>{
+  const item = e.target.closest('#custSuggest .suggest-item');
+  if(item){
+    const c = state.customers.find(x=>x.id===item.dataset.id);
+    state.form.customer = c;
+    custSearch().value = c.name;
+    document.getElementById('custSuggest').style.display='none';
+    showSelectedCustomer();
+  }
+});
+function showNewCustomerForm(){
+  document.getElementById('newCustomerForm').classList.remove('hidden');
+  document.getElementById('custNotFound').classList.add('hidden');
+}
+function hideNewCustomerForm(){ document.getElementById('newCustomerForm').classList.add('hidden'); }
+function saveNewCustomer(){
+  const name  = custSearch().value.trim();
+  const phone = document.getElementById('ncPhone').value.trim();
+  const nid   = document.getElementById('ncNid').value.trim();
+  const addr  = document.getElementById('ncAddress').value.trim();
+  const notes = document.getElementById('ncNotes').value.trim();
+  if(!name) return toast('اسم العميل مطلوب','e');
+  if(phone && !/^01[0-9]{9}$/.test(phone)) return toast('رقم الهاتف غير صحيح','e');
+  if(nid && !/^\d{14}$/.test(nid)) return toast('الرقم القومي يجب أن يكون 14 رقم','e');
+  const c = { id:'c_'+Date.now(), name, phone, nid, address:addr, notes };
+  state.customers.push(c);
+  persist();
+  state.form.customer = c;
+  hideNewCustomerForm();
+  showSelectedCustomer();
+  ['ncPhone','ncNid','ncAddress','ncNotes'].forEach(id=>document.getElementById(id).value='');
+  toast('تم حفظ العميل بنجاح');
+}
+function showSelectedCustomer(){
+  const wrap = document.getElementById('selectedCustomer');
+  const body = document.getElementById('selectedCustomerBody');
+  if(!state.form.customer){ wrap.classList.add('hidden'); return; }
+  const c = state.form.customer;
+  wrap.classList.remove('hidden');
+  body.innerHTML = `
+    <div class="font-semibold">${escapeHtml(c.name)}</div>
+    <div class="text-xs text-softText mt-1">
+      ${c.phone?`📞 ${escapeHtml(c.phone)}`:''}
+      ${c.nid?` · 🆔 ${escapeHtml(c.nid)}`:''}
+      ${c.address?` · 📍 ${escapeHtml(c.address)}`:''}
+    </div>`;
+}
+function clearSelectedCustomer(){
+  state.form.customer = null;
+  custSearch().value='';
+  showSelectedCustomer();
+}
+
+/* ===================== ROLE ===================== */
+function renderRole(){
+  const role = document.querySelector('input[name="role"]:checked').value;
+  state.form.role = role;
+  document.getElementById('roleAgent').classList.toggle('hidden', role!=='agent');
+  document.getElementById('roleCompany').classList.toggle('hidden', role!=='company');
+  document.querySelectorAll('input[name="role"]').forEach(r=>{
+    r.closest('.radio-card').classList.toggle('active', r.checked);
+  });
+}
+
+/* ===================== TAX FILE ===================== */
+const taxDrop = ()=>document.getElementById('taxDrop');
+document.addEventListener('click', e=>{ if(e.target.closest('#taxDrop')) document.getElementById('taxFile').click(); });
+document.addEventListener('change', e=>{
+  if(e.target.id==='taxFile' && e.target.files[0]){
+    const f = e.target.files[0];
+    if(f.type!=='application/pdf') return toast('يجب أن يكون الملف PDF','e');
+    state.form.company.tax = { name:f.name, size:f.size };
+    renderTaxFile();
+  }
+});
+['dragover','dragleave','drop'].forEach(ev=>{
+  document.addEventListener(ev, e=>{
+    const dz = e.target.closest('#taxDrop');
+    if(!dz) return;
+    e.preventDefault();
+    dz.classList.toggle('drag', ev==='dragover');
+    if(ev==='drop'){
+      const f = e.dataTransfer.files[0];
+      if(f && f.type==='application/pdf'){
+        state.form.company.tax = { name:f.name, size:f.size };
+        renderTaxFile();
+      } else toast('PDF فقط','e');
+    }
+  });
+});
+function renderTaxFile(){
+  const wrap = document.getElementById('taxFileInfo');
+  if(!state.form.company.tax){ wrap.innerHTML=''; return; }
+  const t = state.form.company.tax;
+  wrap.innerHTML = `<div class="file-item">
+    <div class="flex items-center gap-2"><span class="text-rose-300">PDF</span><span class="text-slate-200">${escapeHtml(t.name)}</span><span class="text-softText">${(t.size/1024).toFixed(1)} KB</span></div>
+    <button class="icon-btn danger" onclick="state.form.company.tax=null;renderTaxFile()">×</button>
+  </div>`;
+}
+
+/* ===================== MONEY INPUT ===================== */
+document.addEventListener('input', e=>{
+  if(e.target.id==='rFees'){
+    const el = e.target;
+    const raw = el.value.replace(/[^\d]/g,'');
+    if(!raw){ el.value=''; return; }
+    const formatted = parseInt(raw,10).toLocaleString('en-US');
+    // preserve caret roughly at end
+    el.value = formatted;
+  }
+});
+
+/* ===== Status sync (kept for compatibility — no inline responses block on create) ===== */
+function renderResponses(){ /* responses are managed via the unified detail modal */ }
+
+/* ===================== DEPARTMENTS — MULTI-SECTOR ACCORDION ===================== */
+function buildSectorsAccordion(){
+  const wrap = document.getElementById('sectorsAccordion');
+  if (!wrap) return;
+  const sectors = Object.keys(SECTORS);
+  if (!sectors.length){ wrap.innerHTML = `<div class="empty" style="padding:1.2rem">لا توجد قطاعات بعد. أضف قطاعاً من شاشة «الإجراءات».</div>`; return; }
+  const selectedSectors = new Set(state.form.departments.map(d=>d.sector));
+  wrap.innerHTML = sectors.map(sec=>{
+    const depts = SECTORS[sec] || [];
+    const selInSec = state.form.departments.filter(d=>d.sector===sec).length;
+    const open = state.form.openSectors[sec] ?? selectedSectors.has(sec);
+    if (open) state.form.openSectors[sec] = true;
+    return `
+      <div class="sec-group ${open?'open':''} ${selInSec?'has-sel':''}" data-sec="${escapeAttr(sec)}">
+        <div class="sec-head" onclick="toggleSector('${escapeAttr(sec)}')">
+          <svg class="chev" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+          <span class="title">${escapeHtml(sec)}</span>
+          ${selInSec?`<span class="pill">${selInSec} مختار</span>`:`<span class="text-[11px] text-softText">${depts.length} إدارة</span>`}
+        </div>
+        <div class="sec-body">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-1">
+            ${depts.map(d=>{
+              const sel = state.form.departments.some(x=>x.sector===sec && x.name===d);
+              return `<div class="dept-opt ${sel?'sel':''}" onclick="toggleDept('${escapeAttr(sec)}','${escapeAttr(d)}')">
+                <span class="chk"><svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg></span>
+                <span>${escapeHtml(d)}</span>
+              </div>`;
+            }).join('') || '<div class="text-[11px] text-softText p-2">لا توجد إدارات داخل هذا القطاع.</div>'}
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+function toggleSector(sec){
+  state.form.openSectors[sec] = !(state.form.openSectors[sec] ?? false);
+  buildSectorsAccordion();
+}
+function toggleDept(sec, name){
+  const i = state.form.departments.findIndex(d=>d.sector===sec && d.name===name);
+  if (i>=0) state.form.departments.splice(i,1);
+  else state.form.departments.push({ sector:sec, name });
+  state.form.openSectors[sec] = true;
+  buildSectorsAccordion();
+  renderSelectedDeptsTags();
+}
+function renderSelectedDeptsTags(){
+  const wrap = document.getElementById('selectedDeptsWrap');
+  const list = document.getElementById('selectedDeptsTags');
+  if (!wrap || !list) return;
+  if (!state.form.departments.length){ wrap.classList.add('hidden'); list.innerHTML=''; return; }
+  wrap.classList.remove('hidden');
+  const grouped = {};
+  state.form.departments.forEach(d=>{ (grouped[d.sector] ||= []).push(d.name); });
+  list.innerHTML = Object.entries(grouped).map(([sec,names])=>
+    names.map(n=>`<span class="tag"><span class="text-[10px] opacity-70">${escapeHtml(sec)}</span> · ${escapeHtml(n)}<button type="button" onclick="toggleDept('${escapeAttr(sec)}','${escapeAttr(n)}')">×</button></span>`).join('')
+  ).join('');
+}
+
+/* ===================== ATTACHMENTS ===================== */
+document.addEventListener('click', e=>{ if(e.target.closest('#attDrop')) document.getElementById('attFiles').click(); });
+document.addEventListener('change', e=>{
+  if(e.target.id==='attFiles'){
+    addAttachments([...e.target.files]);
+    e.target.value='';
+  }
+});
+['dragover','dragleave','drop'].forEach(ev=>{
+  document.addEventListener(ev, e=>{
+    const dz = e.target.closest('#attDrop');
+    if(!dz) return;
+    e.preventDefault();
+    dz.classList.toggle('drag', ev==='dragover');
+    if(ev==='drop') addAttachments([...e.dataTransfer.files]);
+  });
+});
+function addAttachments(files){
+  for(const f of files){
+    if(f.type!=='application/pdf'){ toast(`"${f.name}" ليس PDF`,'e'); continue; }
+    if(state.form.attachments.length>=5){ toast('الحد الأقصى 5 ملفات','w'); break; }
+    const item = { id:'a_'+Date.now()+Math.random().toString(36).slice(2,6), name:f.name, size:f.size, progress:0 };
+    state.form.attachments.push(item);
+    fakeProgress(item);
+  }
+  renderAttachments();
+}
+function fakeProgress(item){
+  const t = setInterval(()=>{
+    item.progress += 12 + Math.random()*16;
+    if(item.progress>=100){ item.progress=100; clearInterval(t); }
+    renderAttachments();
+  }, 140);
+}
+function renderAttachments(){
+  const wrap = document.getElementById('attList');
+  if(!state.form.attachments.length){ wrap.innerHTML=''; return; }
+  wrap.innerHTML = state.form.attachments.map(a=>`
+    <div class="file-item">
+      <div class="flex items-center gap-2 min-w-0 flex-1">
+        <span class="text-rose-300 text-[10px] font-bold">PDF</span>
+        <span class="text-slate-200 truncate">${escapeHtml(a.name)}</span>
+        <span class="text-softText text-[11px] whitespace-nowrap">${(a.size/1024).toFixed(1)} KB</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="w-24 h-1.5 bg-[#101729] rounded overflow-hidden hidden sm:block">
+          <div class="h-full bg-accentBlue2 transition-all" style="width:${a.progress}%"></div>
+        </div>
+        <button class="icon-btn danger" onclick="removeAttachment('${a.id}')">×</button>
+      </div>
+    </div>
+  `).join('');
+}
+function removeAttachment(id){
+  state.form.attachments = state.form.attachments.filter(a=>a.id!==id);
+  renderAttachments();
+}
+
+/* ===================== SAVE REQUEST ===================== */
+function nextNumber(){
+  // Smart sequential: reuse smallest missing slot
+  const used = new Set();
+  (state.requests||[]).forEach(r => {
+    const m = String(r.number||'').match(/(\d+)\s*$/);
+    if (m) used.add(parseInt(m[1],10));
+  });
+  let n = 1; while (used.has(n)) n++;
+  state.counter = Math.max(state.counter||0, n);
+  return `REQ-2026-${String(n).padStart(4,'0')}`;
+}
+function saveRequest(){
+  const f = state.form;
+  // ---- SYNC agent/company from DOM (fixes save bug) ----
+  f.agent = {
+    name: (document.getElementById('agName')?.value || '').trim(),
+    nid:  (document.getElementById('agNid') ?.value || '').trim(),
+    num:  (document.getElementById('agNum') ?.value || '').trim(),
+  };
+  f.company = {
+    name: (document.getElementById('coName')?.value || '').trim(),
+    reg:  (document.getElementById('coReg') ?.value || '').trim(),
+    tax:  state.form.company?.tax || null,
+  };
+  // Validation
+  if(!f.customer) return toast('اختر أو أنشئ عميلاً','e');
+  if(f.role==='agent'){
+    if(!f.agent.name) return toast('اسم الموكل مطلوب','e');
+    if(!/^\d{14}$/.test(f.agent.nid)) return toast('الرقم القومي للموكل غير صحيح','e');
+    if(!f.agent.num) return toast('رقم التوكيل مطلوب','e');
+  }
+  if(f.role==='company'){
+    if(!f.company.name) return toast('اسم الشركة مطلوب','e');
+    if(!f.company.reg) return toast('السجل التجاري مطلوب','e');
+    if(!f.company.tax && !f.id) return toast('ارفق البطاقة الضريبية (PDF)','e');
+  }
+  f.title     = document.getElementById('rTitle').value.trim();
+  f.category  = document.getElementById('rCategory').value;
+  f.date      = document.getElementById('rDate').value;
+  f.recipient = document.getElementById('rRecipient').value.trim();
+  f.fees      = document.getElementById('rFees').value.replace(/,/g,'');
+  if (!f.id) f.status = 'لم يتم الرد';
+  if(!f.title)    return toast('اسم الطلب مطلوب','e');
+  if(!f.category) return toast('تصنيف الطلب مطلوب','e');
+  if(!f.date)     return toast('تاريخ الاستلام مطلوب','e');
+  if(!f.departments.length) return toast('اختر إدارة واحدة على الأقل','e');
+  if(!f.status) f.status = 'لم يتم الرد';
+
+  let savedRec;
+  if(f.id){
+    const idx = state.requests.findIndex(r=>r.id===f.id);
+    state.requests[idx] = { ...state.requests[idx], ...f };
+    savedRec = state.requests[idx];
+    toast('تم تحديث الطلب');
+  } else {
+    const rec = {
+      ...f,
+      id: 'r_'+Date.now(),
+      number: nextNumber(),
+      createdAt: Date.now(),
+    };
+    state.requests.push(rec);
+    savedRec = rec;
+    toast('تم حفظ الطلب');
+  }
+  persist();
+  // Direct, deterministic customer sync — no wrappers, no timing, no lookups.
+  try {
+    if (window.FX && typeof FX.syncCustomersFromRecord === 'function') {
+      FX.detachRecord('request', savedRec.id);
+      FX.syncCustomersFromRecord(savedRec, 'request');
+    }
+  } catch (e) { console.warn('[requests] customer sync failed', e); }
+  closeRequestModal();
+  renderTable();
+}
+
+/* ===================== VIEW / EDIT / DELETE ===================== */
+function viewRequest(id){
+  const r = state.requests.find(x=>x.id===id); if(!r) return;
+  // Prefer unified detail modal from enhance.js (shows responses, attachments, dept-grouping)
+  if (window.FX && typeof FX.openRecordDetail === 'function') { FX.openRecordDetail(r, 'request'); return; }
+  const body = document.getElementById('viewBody');
+  const row = (k,v)=>`<div class="flex justify-between gap-3 py-2 border-b border-borderClr/60"><span class="text-softText text-xs">${k}</span><span class="text-slate-100 text-sm text-left">${v||'—'}</span></div>`;
+  body.innerHTML = `
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6">
+      ${row('رقم الطلب', `<span class="font-mono text-accentBlue2">${r.number}</span>`)}
+      ${row('الحالة', statusBadge(r.status))}
+      ${row('العميل', escapeHtml(r.customer?.name||''))}
+      ${row('الهاتف', escapeHtml(r.customer?.phone||''))}
+      ${row('عنوان الطلب', escapeHtml(r.title))}
+      ${row('التصنيف', escapeHtml(r.category||''))}
+      ${row('تاريخ الاستلام', r.date)}
+      ${row('اسم مستلم الطلب', escapeHtml(r.recipient||''))}
+      ${row('الرسوم', fmtMoney(r.fees))}
+      ${row('الإدارات', (r.departments||[]).map(d => typeof d==='string'?escapeHtml(d):`${escapeHtml(d.sector)} · ${escapeHtml(d.name)}`).join('<br>'))}
+      ${row('صفة مقدم الطلب', r.role==='self'?'بنفسه':r.role==='agent'?'وكيل':'مفوض شركة')}
+      ${r.role==='agent'?row('بيانات الوكالة', `${escapeHtml(r.agent.name)} · ${escapeHtml(r.agent.nid)} · توكيل ${escapeHtml(r.agent.num)}`):''}
+      ${r.role==='company'?row('الشركة', `${escapeHtml(r.company.name)} · سجل ${escapeHtml(r.company.reg)}`):''}
+      ${r.status==='تم الرد'?row('جهات الرد', (r.responses||[]).map(escapeHtml).join('<br>')):''}
+      ${row('عدد المرفقات', (r.attachments||[]).length)}
+    </div>`;
+  document.getElementById('viewModal').classList.add('open');
+}
+function closeView(){ document.getElementById('viewModal').classList.remove('open'); }
+function editRequest(id){
+  const r = state.requests.find(x=>x.id===id); if(!r) return;
+  openRequestModal(r);
+}
+function deleteRequest(id){
+  if(!confirm('هل أنت متأكد من حذف هذا الطلب؟')) return;
+  state.requests = state.requests.filter(x=>x.id!==id);
+  persist(); renderTable();
+  toast('تم حذف الطلب');
+}
+
+/* ===================== EXPORT ===================== */
+function exportJSON(){
+  const blob = new Blob([JSON.stringify({customers:state.customers,requests:state.requests},null,2)],{type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download=`requests-${Date.now()}.json`; a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ===================== UTILS ===================== */
+function escapeHtml(s){ return String(s??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function escapeAttr(s){ return escapeHtml(s); }
+
+/* ===================== SEED (disabled — real data only) ===================== */
+function seedIfEmpty(){ /* removed: no mock data per requirements */ }
+
+
+
+/* ===================== DYNAMIC LOOKUPS (Store-bound) ===================== */
+function fillSelect(sel, items, {keepFirst=true, current=''} = {}){
+  if(!sel) return;
+  const first = keepFirst ? sel.querySelector('option') : null;
+  const val = current || sel.value;
+  sel.innerHTML = '';
+  if(first) sel.appendChild(first);
+  items.forEach(v=>{
+    const o = document.createElement('option');
+    o.value = v; o.textContent = v;
+    sel.appendChild(o);
+  });
+  if(val && items.includes(val)) sel.value = val;
+}
+function refreshLookups(){
+  // Reload sectors (also triggers form sync if modal open)
+  Object.assign(SECTORS, {});
+  const fresh = (window.Store && Store.sectors()) || {};
+  Object.keys(SECTORS).forEach(k => delete SECTORS[k]);
+  Object.assign(SECTORS, fresh);
+
+  fillSelect(document.getElementById('rCategory'), Store.requestTypes(), {keepFirst:true, current:state.form.category});
+  fillSelect(document.getElementById('fStatus'), Store.actions(),       {keepFirst:true});
+}
+refreshLookups();
+Store.on('fog.requestTypes', refreshLookups);
+Store.on('fog.actions',      refreshLookups);
+Store.on('fog.sectors',      refreshLookups);
+
+/* ===================== INIT ===================== */
+seedIfEmpty();
+refreshLookups();
+renderTable();
+</script>
+<script src="../assets/js/enhance.js"></script>
+<script src="../assets/js/v2.js"></script>
+</body>
+</html>

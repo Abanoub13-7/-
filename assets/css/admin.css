@@ -1,0 +1,55 @@
+/* ============================================================
+   Admin pages overrides — bridges Tailwind CDN-styled
+   requests/complaints/request-types/actions pages with the
+   base dark dashboard layout (sidebar + header).
+============================================================ */
+
+/* Reset body padding so .content provides the page padding */
+body.admin-page { padding: 0 !important; }
+
+/* The .content wrapper from base layout gives 28px padding (16-22 on mobile).
+   Inside, our admin pages use a max-width container that fills available space. */
+.admin-page .content { padding-top: 18px; }
+
+/* Ensure cards/modals use Cairo & inherit dark theme accents */
+.admin-page .modal-backdrop { font-family: 'Cairo','Tajawal',sans-serif; }
+
+/* Toast container — push below the injected top-header (≈68px) */
+.admin-page #toasts { top: 84px !important; }
+
+/* Smooth hover row on tables */
+.admin-page table tbody tr { transition: background .15s ease; }
+
+/* Soft empty state for new admin pages (request-types / actions) */
+.lookup-empty {
+  padding: 3rem 1rem;
+  text-align: center;
+  color: #64748b;
+  background: #131b2e;
+  border: 1px dashed #24324f;
+  border-radius: 12px;
+}
+.lookup-empty i { font-size: 32px; opacity: .55; margin-bottom: .6rem; }
+
+/* Confirm dialog */
+.confirm-dialog {
+  position: fixed; inset: 0; background: rgba(2,6,15,.72); backdrop-filter: blur(6px);
+  z-index: 80; display: none; align-items: center; justify-content: center; padding: 1rem;
+}
+.confirm-dialog.open { display: flex; animation: cdFade .2s ease; }
+@keyframes cdFade { from { opacity: 0; } to { opacity: 1; } }
+.confirm-dialog .box {
+  background: #131b2e; border: 1px solid #24324f; border-radius: 14px;
+  width: 100%; max-width: 420px; padding: 1.4rem;
+  box-shadow: 0 20px 60px -10px rgba(0,0,0,.7);
+}
+.confirm-dialog h4 { color: #fff; font-size: 1rem; font-weight: 700; margin: 0 0 .5rem; }
+.confirm-dialog p  { color: #94a3b8; font-size: .85rem; margin: 0 0 1.2rem; line-height: 1.7; }
+.confirm-dialog .actions { display: flex; gap: .5rem; justify-content: flex-end; }
+
+/* Make sure full-screen admin pages don't overflow horizontally on mobile */
+.admin-page .modal-backdrop { padding: .5rem; }
+@media (max-width: 640px) {
+  .admin-page .modal { margin: .5rem 0; border-radius: 12px; }
+  .admin-page .section-card { padding: .85rem; }
+}

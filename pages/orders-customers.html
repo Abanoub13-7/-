@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>عملاء الطلبات/الشكاوى | لوحة تحكم فوج المقر</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/common.css">
+  <link rel="stylesheet" href="../assets/css/customers.css">
+<link rel="stylesheet" href="../assets/css/enhance.css">
+</head>
+<body data-page="orders-customers">
+
+<main class="main-wrapper">
+  <div class="content">
+
+    <section class="customers-section" id="requestsCustomers">
+      <div class="customers-head">
+        <h2 class="section-title">عملاء الطلبات والشكاوى</h2>
+        <span class="head-meta"><i class="fa-solid fa-database"></i> قاعدة بيانات العملاء المسجلين</span>
+      </div>
+
+      <div class="customers-controls">
+        <div class="tabs" role="tablist" aria-label="فلترة العملاء">
+          <span class="tab-indicator" aria-hidden="true"></span>
+          <button class="tab-btn active" data-tab="individual" role="tab">
+            <i class="fa-solid fa-user"></i> الأفراد
+            <span class="tab-count" data-count="individual">0</span>
+          </button>
+          <button class="tab-btn" data-tab="company" role="tab">
+            <i class="fa-solid fa-building"></i> الشركات
+            <span class="tab-count" data-count="company">0</span>
+          </button>
+        </div>
+
+        <div class="search-box">
+          <input type="search" placeholder="ابحث بالاسم أو رقم الهاتف…" aria-label="بحث">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <button class="clear-btn" type="button" aria-label="مسح البحث"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table class="customers-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>الاسم</th>
+                <th>رقم الهاتف</th>
+                <th>الرقم القومي</th>
+                <th>العنوان</th>
+                <th>الطلبات/الشكاوى</th>
+                <th>النوع</th>
+                <th>إجراءات</th>
+              </tr>
+            </thead>
+            <tbody class="table-body-anim"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script src="../assets/js/layout.js"></script>
+<script src="../assets/js/script.js"></script>
+<script src="../assets/js/store.js"></script>
+<script src="../assets/js/enhance.js"></script>
+<script src="../assets/js/v2.js"></script>
+<script src="../assets/js/customers.js"></script>
+</body>
+</html>

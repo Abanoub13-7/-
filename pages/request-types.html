@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>أنواع الطلبات | لوحة تحكم فوج المقر</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { theme: { extend: {
+  colors: {
+    darkBg:'#090d16', cardBg:'#131b2e', cardBg2:'#172037', inputBg:'#1f293d',
+    accentBlue:'#0052cc', accentBlue2:'#1e6bff', borderClr:'#24324f',
+    borderClr2:'#2d3d60', softText:'#94a3b8',
+  },
+  fontFamily: { cairo: ['Cairo','sans-serif'] },
+}}}
+</script>
+
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/common.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+
+<style>
+  html,body{font-family:'Cairo',sans-serif}
+  .field{
+    background:#1f293d;border:1px solid #24324f;border-radius:8px;
+    padding:.65rem .85rem;font-size:.85rem;color:#e2e8f0;width:100%;
+    transition:.18s ease;outline:none;font-family:inherit;
+  }
+  .field::placeholder{color:#64748b}
+  .field:focus{border-color:#1e6bff;box-shadow:0 0 0 4px rgba(30,107,255,.18);background:#1c2740}
+  .label{font-size:.75rem;color:#94a3b8;margin-bottom:.35rem;display:block;font-weight:500}
+
+  .btn{display:inline-flex;align-items:center;gap:.4rem;font-weight:600;font-size:.82rem;
+    padding:.6rem 1rem;border-radius:8px;transition:.18s;cursor:pointer;border:1px solid transparent;white-space:nowrap}
+  .btn-primary{background:#0052cc;color:#fff;box-shadow:0 6px 18px -8px rgba(0,82,204,.7)}
+  .btn-primary:hover{background:#1e6bff;transform:translateY(-1px)}
+  .btn-ghost{background:transparent;color:#cbd5e1;border-color:#24324f}
+  .btn-ghost:hover{background:#1a2540;border-color:#33456b;color:#fff}
+  .btn-danger{background:#7f1d1d;color:#fecaca}
+  .btn-danger:hover{background:#991b1b;color:#fff}
+
+  .icon-btn{width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;
+    border-radius:8px;border:1px solid #24324f;background:#172037;color:#94a3b8;transition:.18s;cursor:pointer}
+  .icon-btn:hover{color:#fff;border-color:#33456b;background:#1f2b48}
+  .icon-btn.danger:hover{color:#fecaca;border-color:#7f1d1d;background:#3b1212}
+
+  .modal-backdrop{position:fixed;inset:0;background:rgba(2,6,15,.72);backdrop-filter:blur(6px);
+    z-index:60;display:none;align-items:center;justify-content:center;padding:1rem}
+  .modal-backdrop.open{display:flex;animation:fadeIn .2s ease}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .modal{background:#131b2e;border:1px solid #24324f;border-radius:14px;width:100%;max-width:480px;
+    box-shadow:0 20px 60px -10px rgba(0,0,0,.7)}
+
+  .toast{background:#172037;border:1px solid #24324f;border-radius:10px;padding:.7rem .9rem;
+    display:flex;align-items:center;gap:.55rem;font-size:.8rem;min-width:240px;
+    box-shadow:0 16px 32px -10px rgba(0,0,0,.6);animation:slideIn .25s ease}
+  .toast.s{border-color:rgba(34,197,94,.4)}
+  .toast.e{border-color:rgba(239,68,68,.4)}
+  @keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+</style>
+<link rel="stylesheet" href="../assets/css/enhance.css">
+</head>
+<body class="admin-page min-h-screen" data-page="request-types">
+
+<div id="toasts" class="fixed top-4 left-4 z-[80] flex flex-col gap-2"></div>
+
+<main class="main-wrapper">
+<div class="content">
+
+<div class="max-w-[1200px] mx-auto">
+
+  <header class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+    <div>
+      <h1 class="text-2xl md:text-[28px] font-bold text-white tracking-tight">أنواع الطلبات</h1>
+      <p class="text-[13px] text-softText mt-1">إدارة تصنيفات الطلبات — تُستخدم تلقائياً في صفحة "إضافة طلب جديد".</p>
+    </div>
+    <div class="flex gap-2">
+      <button class="btn btn-primary" onclick="openTypeModal()">
+        <i class="fa-solid fa-plus"></i> إضافة نوع جديد
+      </button>
+    </div>
+  </header>
+
+  <section class="bg-cardBg border border-borderClr rounded-xl p-4 mb-4">
+    <div class="relative">
+      <i class="fa-solid fa-magnifying-glass absolute top-1/2 -translate-y-1/2 right-3 text-softText text-xs"></i>
+      <input id="searchInput" class="field pr-9" placeholder="ابحث في أنواع الطلبات..." />
+    </div>
+  </section>
+
+  <section class="bg-cardBg border border-borderClr rounded-xl overflow-hidden">
+    <div class="flex items-center justify-between px-4 py-3.5 border-b border-borderClr">
+      <h2 class="text-sm font-semibold text-white flex items-center gap-2">
+        <span class="w-1.5 h-1.5 rounded-full bg-accentBlue2 shadow-[0_0_10px_#1e6bff]"></span>
+        قائمة الأنواع <span id="countBadge" class="text-xs text-softText font-normal mr-1">(0)</span>
+      </h2>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm min-w-[600px]">
+        <thead class="bg-[#101729] text-softText text-xs uppercase tracking-wider">
+          <tr>
+            <th class="px-4 py-3 text-right font-semibold w-16">#</th>
+            <th class="px-4 py-3 text-right font-semibold">اسم النوع</th>
+            <th class="px-4 py-3 text-right font-semibold w-40">عدد الطلبات</th>
+            <th class="px-4 py-3 text-center font-semibold w-36">الإجراءات</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+    <div id="emptyState" class="lookup-empty hidden">
+      <i class="fa-solid fa-layer-group"></i>
+      <p class="text-sm font-semibold text-slate-300">لا توجد أنواع مطابقة</p>
+      <p class="text-xs mt-1">أضف نوعاً جديداً للبدء.</p>
+    </div>
+  </section>
+
+</div>
+
+</div>
+</main>
+
+<!-- Add/Edit Modal -->
+<div id="typeModal" class="modal-backdrop">
+  <div class="modal">
+    <div class="flex items-center justify-between px-5 py-4 border-b border-borderClr">
+      <h3 id="modalTitle" class="text-base font-bold text-white">إضافة نوع طلب جديد</h3>
+      <button class="icon-btn" onclick="closeTypeModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="p-5">
+      <label class="label">اسم النوع <span class="text-rose-300">*</span></label>
+      <input id="typeName" class="field" placeholder="مثال: استكمال إجراءات التقنين" maxlength="80" />
+      <p class="text-xs text-softText mt-2">سيظهر هذا الاسم تلقائياً في قائمة "تصنيف الطلب".</p>
+    </div>
+    <div class="flex items-center justify-end gap-2 px-5 py-4 border-t border-borderClr">
+      <button class="btn btn-ghost" onclick="closeTypeModal()">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveType()">حفظ</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Dialog -->
+<div id="confirmDlg" class="confirm-dialog">
+  <div class="box">
+    <h4 id="cfTitle">تأكيد الحذف</h4>
+    <p id="cfMsg">هل أنت متأكد؟</p>
+    <div class="actions">
+      <button class="btn btn-ghost" onclick="closeConfirm()">إلغاء</button>
+      <button class="btn btn-danger" id="cfOk">حذف</button>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/store.js"></script>
+<script src="../assets/js/layout.js"></script>
+<script src="../assets/js/script.js"></script>
+<script>
+'use strict';
+
+let editIndex = -1;
+let searchQ = '';
+
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+function toast(msg, type='s'){
+  const wrap = document.getElementById('toasts');
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  const icon = type==='s' ? '✓' : type==='e' ? '!' : '⚠';
+  el.innerHTML = `<span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${type==='s'?'bg-green-500/20 text-green-300':type==='e'?'bg-rose-500/20 text-rose-300':'bg-amber-500/20 text-amber-300'}">${icon}</span><span>${escapeHtml(msg)}</span>`;
+  wrap.appendChild(el);
+  setTimeout(()=>{el.style.opacity='0';el.style.transition='.25s';setTimeout(()=>el.remove(),250);}, 2600);
+}
+
+function countUsage(name){
+  try {
+    const reqs = JSON.parse(localStorage.getItem('rms_requests') || '[]');
+    return reqs.filter(r => r.category === name).length;
+  } catch(_) { return 0; }
+}
+
+function render(){
+  const all = Store.requestTypes();
+  const q = searchQ.toLowerCase();
+  const items = q ? all.filter(t => t.toLowerCase().includes(q)) : all;
+  document.getElementById('countBadge').textContent = `(${items.length})`;
+  const tbody = document.getElementById('tbody');
+  const empty = document.getElementById('emptyState');
+
+  if (!items.length) {
+    tbody.innerHTML = '';
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+
+  tbody.innerHTML = items.map((name, i) => {
+    const realIdx = all.indexOf(name);
+    const usage = countUsage(name);
+    return `
+      <tr class="border-t border-borderClr hover:bg-[#172037]/60">
+        <td class="px-4 py-3 text-softText text-xs font-mono">${i+1}</td>
+        <td class="px-4 py-3 text-white font-medium">${escapeHtml(name)}</td>
+        <td class="px-4 py-3">
+          ${usage ? `<span class="inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full bg-accentBlue2/10 text-accentBlue2 border border-accentBlue2/30">${usage} طلب</span>` : '<span class="text-xs text-softText">— لا يوجد —</span>'}
+        </td>
+        <td class="px-4 py-3">
+          <div class="flex items-center justify-center gap-1.5">
+            <button class="icon-btn" title="تعديل" onclick="openTypeModal(${realIdx})"><i class="fa-solid fa-pen text-[11px]"></i></button>
+            <button class="icon-btn danger" title="حذف" onclick="confirmDelete(${realIdx})"><i class="fa-solid fa-trash text-[11px]"></i></button>
+          </div>
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+/* ===== Modal ===== */
+function openTypeModal(idx = -1){
+  editIndex = idx;
+  const items = Store.requestTypes();
+  document.getElementById('modalTitle').textContent = idx >= 0 ? 'تعديل نوع الطلب' : 'إضافة نوع طلب جديد';
+  document.getElementById('typeName').value = idx >= 0 ? items[idx] : '';
+  document.getElementById('typeModal').classList.add('open');
+  setTimeout(()=>document.getElementById('typeName').focus(), 50);
+}
+function closeTypeModal(){ document.getElementById('typeModal').classList.remove('open'); }
+function saveType(){
+  const name = document.getElementById('typeName').value.trim();
+  if (!name) return toast('اسم النوع مطلوب', 'e');
+  const items = Store.requestTypes();
+  const dup = items.findIndex((n,i) => n === name && i !== editIndex);
+  if (dup >= 0) return toast('هذا النوع موجود بالفعل', 'e');
+
+  Store.update('fog.requestTypes', list => {
+    const next = list.slice();
+    if (editIndex >= 0) next[editIndex] = name; else next.push(name);
+    return next;
+  });
+  toast(editIndex >= 0 ? 'تم تحديث النوع' : 'تم إضافة النوع');
+  closeTypeModal();
+  render();
+}
+
+/* ===== Confirm delete ===== */
+function confirmDelete(idx){
+  const items = Store.requestTypes();
+  const name = items[idx];
+  const usage = countUsage(name);
+  document.getElementById('cfMsg').textContent = usage
+    ? `هذا النوع مستخدم في ${usage} طلب. حذفه لن يحذف الطلبات لكن قد يجعلها بلا تصنيف. هل تريد المتابعة؟`
+    : `هل تريد حذف "${name}"؟ لا يمكن التراجع.`;
+  document.getElementById('cfOk').onclick = () => {
+    Store.update('fog.requestTypes', list => list.filter((_,i) => i !== idx));
+    closeConfirm();
+    render();
+    toast('تم الحذف');
+  };
+  document.getElementById('confirmDlg').classList.add('open');
+}
+function closeConfirm(){ document.getElementById('confirmDlg').classList.remove('open'); }
+
+/* ===== Search (debounced) ===== */
+let st;
+document.getElementById('searchInput').addEventListener('input', e => {
+  clearTimeout(st);
+  st = setTimeout(() => { searchQ = e.target.value.trim(); render(); }, 150);
+});
+
+/* ===== Close modals on ESC / backdrop ===== */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeTypeModal(); closeConfirm(); }
+});
+document.querySelectorAll('.modal-backdrop, .confirm-dialog').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
+});
+
+Store.on('fog.requestTypes', render);
+render();
+</script>
+<script src="../assets/js/enhance.js"></script>
+<script src="../assets/js/v2.js"></script>
+</body>
+</html>
